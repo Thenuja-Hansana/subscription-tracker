@@ -15,8 +15,10 @@ const errorMiddleware = (err, req, res, next) => {
 
     // MongoDB: a field that must be unique (like email) is already taken
     if (err.code === 11000) {
+        const field = Object.keys(err.keyValue)[0];
+
         statusCode = 409;
-        message = 'That value is already in use';
+        message = `That ${field} is already in use`;
     }
 
     // Mongoose: one or more fields failed the rules in the model
