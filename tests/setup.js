@@ -8,6 +8,9 @@ let mongoServer;
 beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
     await mongoose.connect(mongoServer.getUri());
+
+    // Build the indexes (like "email must be unique") before any test runs
+    await mongoose.connection.syncIndexes();
 });
 
 // Empty every collection after each test so one test cannot affect another

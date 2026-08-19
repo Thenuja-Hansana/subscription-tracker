@@ -4,5 +4,9 @@ export default defineConfig({
     test: {
         // Starts the in-memory database before each test file
         setupFiles: ['./tests/setup.js'],
+        // Values the tests use in place of a real .env file
+        env: {
+            JWT_SECRET: 'test-secret',
+        },
     },
 });
