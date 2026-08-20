@@ -2,6 +2,7 @@ import express from 'express';
 
 import errorMiddleware from './middlewares/error.middleware.js';
 import authRouter from './routes/auth.routes.js';
+import subscriptionRouter from './routes/subscription.routes.js';
 import userRouter from './routes/user.routes.js';
 
 const app = express();
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/subscriptions', subscriptionRouter);
 
 // Runs when none of the routes above matched the request
 app.use((req, res) => {
