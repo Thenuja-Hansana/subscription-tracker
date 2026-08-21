@@ -336,3 +336,70 @@ describe('delete a subscription', () => {
         expect(stillThere.status).toBe(200);
     });
 });
+
+describe('spending summary', () => {
+    it('adds up monthly and yearly cost per currency and category', async () => {
+        const token = await getToken();
+        await create(token, { ...netflix, price: 10, frequency: 'monthly', category: 'entertainment' });
+        await create(token, { ...netflix, name: 'Notion', price: 120, frequency: 'yearly', category: 'productivity' });
+        await create(token, { ...netflix, name: 'Gym', price: 5, frequency: 'weekly', category: 'health', currency: 'EUR' });
+
+        const response = await request(app).get(`${url}/summary`).set('Authorization', `Bearer ${token}`);
+
+        expect(response.status).toBe(200);
+        expect(response.body.data.totals).toEqual({
+            USD: {
+                monthly: 20,
+                yearly: 240,
+                byCategory: {
+                    entertainment: { monthly: 10, yearly: 120 },
+                    productivity: { monthly: 10, yearly: 120 },
+                },
+            },
+            EUR: {
+                monthly: 21.67,
+                yearly: 260,
+                byCategory: {
+                    health: { monthly: 21.67, yearly: 260 },
+                },
+            },
+        });
+    });
+
+    it('leaves out paused and cancelled subscriptions', async () => {
+        const token = await getToken();
+        await create(token);
+        const paused = await create(token, { ...netflix, name: 'Spotify', price: 50 });
+        await request(app)
+            .patch(`${url}/${paused.body.data._id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send({ status: 'paused' });
+
+        const response = await request(app).get(`${url}/summary`).set('Authorization', `Bearer ${token}`);
+
+        expect(response.body.data.totals.USD.monthly).toBe(10);
+    });
+
+    it('lists free trials separately and does not count them yet', async () => {
+        const token = await getToken();
+        await create(token);
+        await create(token, { ...netflix, name: 'Disney+', price: 8, isTrial: true, renewalDate: '2090-02-01' });
+
+        const response = await request(app).get(`${url}/summary`).set('Authorization', `Bearer ${token}`);
+
+        expect(response.body.data.totals.USD.monthly).toBe(10);
+        expect(response.body.data.trials).toEqual([
+            { name: 'Disney+', price: 8, currency: 'USD', frequency: 'monthly', trialEndsOn: '2090-02-01T00:00:00.000Z' },
+        ]);
+    });
+
+    it("does not include another user's subscriptions", async () => {
+        const ownerToken = await getToken('owner@example.com');
+        const otherToken = await getToken('other@example.com');
+        await create(ownerToken);
+
+        const response = await request(app).get(`${url}/summary`).set('Authorization', `Bearer ${otherToken}`);
+
+        expect(response.body.data).toEqual({ totals: {}, trials: [] });
+    });
+});

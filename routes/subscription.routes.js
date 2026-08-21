@@ -5,6 +5,7 @@ import {
     deleteSubscription,
     getSubscription,
     getSubscriptions,
+    getSummary,
     updateSubscription,
 } from '../controllers/subscription.controller.js';
 import authorize from '../middlewares/auth.middleware.js';
@@ -16,6 +17,9 @@ subscriptionRouter.use(authorize);
 
 subscriptionRouter.post('/', createSubscription);
 subscriptionRouter.get('/', getSubscriptions);
+
+// Must come before '/:id', otherwise the word "summary" would be treated as an id
+subscriptionRouter.get('/summary', getSummary);
 
 subscriptionRouter.get('/:id', getSubscription);
 subscriptionRouter.patch('/:id', updateSubscription);
