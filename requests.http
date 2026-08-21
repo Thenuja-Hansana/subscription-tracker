@@ -1,0 +1,130 @@
+# Requests for trying the API by hand with the VS Code "REST Client" extension.
+# 1. Start the server:  npm run dev
+# 2. Click "Send Request" above any request below. The response opens on the right.
+
+@baseUrl = http://localhost:3000/api/v1
+
+### Sign up - creates an account (expect 201)
+POST {{baseUrl}}/auth/sign-up
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "password123"
+}
+
+### Sign in - returns a token (expect 200)
+# Send this one before the profile request, which reuses its token.
+# @name signIn
+POST {{baseUrl}}/auth/sign-in
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "password123"
+}
+
+### Get my profile - uses the token from the sign in request (expect 200)
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{signIn.response.body.$.data.token}}
+
+
+# ---------- Subscriptions (send the sign in request first) ----------
+
+### Create a subscription (expect 201)
+# Only name, price and frequency are required.
+# frequency: daily, weekly, monthly, yearly
+# category:  entertainment, productivity, utilities, education, health, finance, other
+# currency:  USD, EUR, GBP
+# @name createSubscription
+POST {{baseUrl}}/subscriptions
+Authorization: Bearer {{signIn.response.body.$.data.token}}
+Content-Type: application/json
+
+{
+    "name": "Netflix",
+    "price": 15.99,
+    "currency": "USD",
+    "frequency": "monthly",
+    "category": "entertainment",
+    "paymentMethod": "Visa ending 4242",
+    "startDate": "2026-09-20"
+}
+
+### Create a free trial - renewalDate is the day the trial ends (expect 201)
+POST {{baseUrl}}/subscriptions
+Authorization: Bearer {{signIn.response.body.$.data.token}}
+Content-Type: application/json
+
+{
+    "name": "Disney+",
+    "price": 7.99,
+    "frequency": "monthly",
+    "category": "entertainment",
+    "isTrial": true,
+    "renewalDate": "2026-11-01"
+}
+
+### List my subscriptions (expect 200)
+GET {{baseUrl}}/subscriptions
+Authorization: Bearer {{signIn.response.body.$.data.token}}
+
+### List only my active entertainment subscriptions (expect 200)
+GET {{baseUrl}}/subscriptions?status=active&category=entertainment
+Authorization: Bearer {{signIn.response.body.$.data.token}}
+
+### Get the subscription made by the create request above (expect 200)
+GET {{baseUrl}}/subscriptions/{{createSubscription.response.body.$.data._id}}
+Authorization: Bearer {{signIn.response.body.$.data.token}}
+
+### Change its price (expect 200)
+PATCH {{baseUrl}}/subscriptions/{{createSubscription.response.body.$.data._id}}
+Authorization: Bearer {{signIn.response.body.$.data.token}}
+Content-Type: application/json
+
+{
+    "price": 17.99
+}
+
+### Pause it - use "active" to resume or "cancelled" to cancel (expect 200)
+PATCH {{baseUrl}}/subscriptions/{{createSubscription.response.body.$.data._id}}
+Authorization: Bearer {{signIn.response.body.$.data.token}}
+Content-Type: application/json
+
+{
+    "status": "paused"
+}
+
+### Spending summary - monthly and yearly totals (expect 200)
+GET {{baseUrl}}/subscriptions/summary
+Authorization: Bearer {{signIn.response.body.$.data.token}}
+
+### Delete it (expect 200)
+DELETE {{baseUrl}}/subscriptions/{{createSubscription.response.body.$.data._id}}
+Authorization: Bearer {{signIn.response.body.$.data.token}}
+
+
+# ---------- Requests that should be rejected ----------
+
+### Sign up with a password that is too short (expect 400)
+POST {{baseUrl}}/auth/sign-up
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "another@example.com",
+    "password": "short"
+}
+
+### Sign in with the wrong password (expect 401)
+POST {{baseUrl}}/auth/sign-in
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "wrong-password"
+}
+
+### Get my profile without a token (expect 401)
+GET {{baseUrl}}/users/me
