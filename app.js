@@ -1,5 +1,6 @@
 import express from 'express';
 
+import { protectApi } from './middlewares/arcjet.middleware.js';
 import errorMiddleware from './middlewares/error.middleware.js';
 import authRouter from './routes/auth.routes.js';
 import subscriptionRouter from './routes/subscription.routes.js';
@@ -16,6 +17,9 @@ app.use((req, res, next) => {
     req.body = req.body || {};
     next();
 });
+
+// Blocks bots and rate limits every route below this line
+app.use(protectApi);
 
 app.get('/', (req, res) => {
     res.send('Welcome to the Subscription Tracker API');

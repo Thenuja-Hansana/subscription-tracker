@@ -5,6 +5,8 @@
 @baseUrl = http://localhost:3000/api/v1
 
 ### Sign up - creates an account (expect 201)
+# Once ARCJET_KEY is set, the email has to be a real one. Made-up addresses such as
+# test@example.com are rejected with 400, so put your own email here to create a new account.
 POST {{baseUrl}}/auth/sign-up
 Content-Type: application/json
 
@@ -115,6 +117,16 @@ Content-Type: application/json
     "name": "Test User",
     "email": "another@example.com",
     "password": "short"
+}
+
+### Sign up with a throwaway email address (expect 400 once ARCJET_KEY is set)
+POST {{baseUrl}}/auth/sign-up
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "someone@mailinator.com",
+    "password": "password123"
 }
 
 ### Sign in with the wrong password (expect 401)
