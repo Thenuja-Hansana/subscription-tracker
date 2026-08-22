@@ -8,6 +8,8 @@ export default defineConfig({
         env: {
             JWT_SECRET: 'test-secret',
             ARCJET_KEY: 'test-key',
+            EMAIL_USER: 'sender@example.com',
+            EMAIL_PASSWORD: 'test-password',
         },
     },
 });

@@ -11,3 +11,6 @@ export const DB_URI = process.env.DB_URI;
 export const JWT_SECRET = process.env.JWT_SECRET;
 export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 export const ARCJET_KEY = process.env.ARCJET_KEY;
+
+export const EMAIL_USER = process.env.EMAIL_USER;
+export const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
