@@ -27,6 +27,17 @@ export const addOnePeriod = (date, frequency) => {
     return next;
 };
 
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+// Midnight (UTC) at the start of the given day, so the time of day does not affect the count
+const startOfDay = (date) => Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+
+// Returns how many whole days are left until the given date.
+// 0 means it is today, 1 means tomorrow, and a negative number means the date has passed.
+export const daysUntil = (date, today = new Date()) => {
+    return Math.round((startOfDay(date) - startOfDay(today)) / MS_PER_DAY);
+};
+
 // Returns the first renewal date after the given date that is still in the future.
 // Example: a monthly subscription that started 3 months ago next renews at the 4 month mark.
 export const nextRenewalDate = (date, frequency) => {

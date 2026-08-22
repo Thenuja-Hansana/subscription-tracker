@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { addOnePeriod, nextRenewalDate } from '../utils/renewal.js';
+import { addOnePeriod, daysUntil, nextRenewalDate } from '../utils/renewal.js';
 
 // Turns a date into text like "2030-01-15" so it is easy to compare
 const day = (date) => date.toISOString().slice(0, 10);
@@ -44,6 +44,29 @@ describe('addOnePeriod', () => {
 
     it('throws for a frequency it does not know', () => {
         expect(() => addOnePeriod(new Date('2030-01-15'), 'hourly')).toThrow('Unknown frequency: hourly');
+    });
+});
+
+describe('daysUntil', () => {
+    const today = new Date('2030-01-15T09:00:00.000Z');
+
+    it('is 0 for any time today', () => {
+        expect(daysUntil(new Date('2030-01-15T00:00:00.000Z'), today)).toBe(0);
+        expect(daysUntil(new Date('2030-01-15T23:59:00.000Z'), today)).toBe(0);
+    });
+
+    it('is 1 for tomorrow, even when it is only minutes away', () => {
+        const lateToday = new Date('2030-01-15T23:55:00.000Z');
+
+        expect(daysUntil(new Date('2030-01-16T00:05:00.000Z'), lateToday)).toBe(1);
+    });
+
+    it('counts days across the end of a month', () => {
+        expect(daysUntil(new Date('2030-02-05T00:00:00.000Z'), today)).toBe(21);
+    });
+
+    it('is negative for a date that has passed', () => {
+        expect(daysUntil(new Date('2030-01-12T18:00:00.000Z'), today)).toBe(-3);
     });
 });
 
