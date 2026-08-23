@@ -12,5 +12,9 @@ export const JWT_SECRET = process.env.JWT_SECRET;
 export const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 export const ARCJET_KEY = process.env.ARCJET_KEY;
 
+// The address this API can be reached at. Upstash uses it to call the daily check.
+export const SERVER_URL = process.env.SERVER_URL || `http://localhost:${PORT}`;
+export const QSTASH_TOKEN = process.env.QSTASH_TOKEN;
+
 export const EMAIL_USER = process.env.EMAIL_USER;
 export const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;

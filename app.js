@@ -5,11 +5,16 @@ import errorMiddleware from './middlewares/error.middleware.js';
 import authRouter from './routes/auth.routes.js';
 import subscriptionRouter from './routes/subscription.routes.js';
 import userRouter from './routes/user.routes.js';
+import workflowRouter from './routes/workflow.routes.js';
 
 const app = express();
 
 // Lets us read JSON sent in a request body as req.body
 app.use(express.json());
+
+// The daily check is called by Upstash, which is an automated client. It has to come before
+// the bot and rate limit protection below, otherwise Upstash would be blocked as a bot.
+app.use('/api/v1/workflows', workflowRouter);
 
 // req.body is undefined when a request has no JSON body.
 // Use an empty object instead so controllers can always read fields from it.
