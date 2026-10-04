@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">Subscription Tracker API</title>
+  <desc id="desc">A REST API that tracks subscriptions and emails a reminder before each renewal. Three example subscriptions are shown with the days left until they renew.</desc>
+
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="word" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#38bdf8"/>
+      <stop offset="1" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; }
+    .eyebrow { font-size: 15px; font-weight: 600; letter-spacing: 2px; fill: #38bdf8; }
+    .title { font-size: 54px; font-weight: 700; fill: #f8fafc; }
+    .subtitle { font-size: 21px; fill: #94a3b8; }
+    .chip { fill: #1e293b; stroke: #334155; }
+    .chip-text { font-size: 15px; fill: #cbd5e1; text-anchor: middle; }
+    .card { fill: #ffffff; fill-opacity: 0.05; stroke: #ffffff; stroke-opacity: 0.12; }
+    .name { font-size: 16px; font-weight: 600; fill: #f8fafc; }
+    .price { font-size: 13px; fill: #94a3b8; }
+    .due { fill: #1e293b; stroke: #334155; }
+    .due-text { font-size: 13px; font-weight: 600; fill: #e2e8f0; text-anchor: middle; }
+
+    /* Each "renews in" label lights up in turn */
+    .glow { fill: #f59e0b; fill-opacity: 0.2; stroke: #f59e0b; opacity: 0; animation: glow 4.5s ease-in-out infinite; }
+    .glow-2 { animation-delay: 1.5s; }
+    .glow-3 { animation-delay: 3s; }
+    @keyframes glow {
+      0% { opacity: 0; }
+      6% { opacity: 1; }
+      26% { opacity: 1; }
+      33% { opacity: 0; }
+      100% { opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .glow { animation: none; }
+      .glow-3 { opacity: 1; }
+    }
+  </style>
+
+  <rect width="1200" height="320" rx="24" fill="url(#background)"/>
+
+  <!-- Title -->
+  <text class="eyebrow" x="64" y="88">REST API · NODE.JS · EXPRESS · MONGODB</text>
+  <text class="title" x="64" y="152">Subscription <tspan fill="url(#word)">Tracker</tspan></text>
+  <text class="subtitle" x="64" y="196">Know what you pay for. Get an email before every renewal.</text>
+
+  <rect class="chip" x="64" y="226" width="104" height="34" rx="17"/>
+  <text class="chip-text" x="116" y="248">JWT auth</text>
+  <rect class="chip" x="180" y="226" width="168" height="34" rx="17"/>
+  <text class="chip-text" x="264" y="248">Arcjet protection</text>
+  <rect class="chip" x="360" y="226" width="156" height="34" rx="17"/>
+  <text class="chip-text" x="438" y="248">Daily reminders</text>
+
+  <!-- Example subscriptions -->
+  <rect class="card" x="772" y="58" width="364" height="60" rx="14"/>
+  <circle cx="806" cy="88" r="12" fill="#f87171"/>
+  <text class="name" x="832" y="84">Video streaming</text>
+  <text class="price" x="832" y="104">$15.99 / month</text>
+  <rect class="due" x="1016" y="74" width="104" height="28" rx="14"/>
+  <rect class="glow" x="1016" y="74" width="104" height="28" rx="14"/>
+  <text class="due-text" x="1068" y="93">in 7 days</text>
+
+  <rect class="card" x="772" y="130" width="364" height="60" rx="14"/>
+  <circle cx="806" cy="160" r="12" fill="#34d399"/>
+  <text class="name" x="832" y="156">Music</text>
+  <text class="price" x="832" y="176">$9.99 / month</text>
+  <rect class="due" x="1016" y="146" width="104" height="28" rx="14"/>
+  <rect class="glow glow-2" x="1016" y="146" width="104" height="28" rx="14"/>
+  <text class="due-text" x="1068" y="165">in 2 days</text>
+
+  <rect class="card" x="772" y="202" width="364" height="60" rx="14"/>
+  <circle cx="806" cy="232" r="12" fill="#38bdf8"/>
+  <text class="name" x="832" y="228">Cloud storage</text>
+  <text class="price" x="832" y="248">$99.00 / year</text>
+  <rect class="due" x="1016" y="218" width="104" height="28" rx="14"/>
+  <rect class="glow glow-3" x="1016" y="218" width="104" height="28" rx="14"/>
+  <text class="due-text" x="1068" y="237">tomorrow</text>
+</svg>
